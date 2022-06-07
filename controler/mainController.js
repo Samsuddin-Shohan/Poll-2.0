@@ -30,9 +30,36 @@ const createPostController = async(req,res,next)=>{
 
    
 }
+const pollsGetController = async(req,res,next)=>{
+  try{
+    const polls = await pollDb.find({});
+    res.render('polls',{polls});
+}
+catch(e){
+    console.log(e);
+}
+  
+}
+const singlePollGetController = async(req,res,next)=>{
+    const id = req.params.id;
+    try{
+        const poll = await pollDb.findById(id);
+        console.log(poll);
+        res.redirect('/polls');
+    }
+    catch(e){
+        console.log(e);
+    }
 
+}
+const singlePollPostController = async (req,res,next)=>{
+
+}
 module.exports ={
     homeGetController,
     createGetController,
-    createPostController
+    createPostController,
+    pollsGetController,
+    singlePollGetController,
+    singlePollPostController
 }

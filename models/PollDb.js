@@ -11,6 +11,10 @@ const pollDbSchema = new Schema({
         required:true,
         trim:true
     },
+    totalVote:{
+        type:Number,
+        default:0
+    },
     options:{
         type:[{
             name:String,
