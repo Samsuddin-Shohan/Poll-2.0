@@ -45,7 +45,21 @@ const singlePollGetController = async(req,res,next)=>{
     try{
         const poll = await pollDb.findById(id);
         console.log(poll);
-        res.redirect('/polls');
+        let options = [...poll.options];
+        let result = [];
+        options.forEach(opt => {
+            let percantage;
+            percantage = (opt.vote * 100)/poll.totalVote;
+
+            result.push({
+                ...opt._doc,
+                percantage: percantage ? percantage : 0,
+
+            })
+            
+        })
+        console.log(result);
+        res.render('singlePoll',{poll,result})
     }
     catch(e){
         console.log(e);
@@ -53,6 +67,29 @@ const singlePollGetController = async(req,res,next)=>{
 
 }
 const singlePollPostController = async (req,res,next)=>{
+    const id = req.params.id;
+    const optionId = req.body.option;
+    try{
+        // console.log(req.body,req.params);
+        const poll = await pollDb.findById(id);
+        let options = [...poll.options];
+        let index = poll.options.findIndex(opt => opt.id === optionId);
+        options[index].vote = poll.options[index].vote+1;
+        let totalVote = poll.totalVote+1;
+        console.log(totalVote);
+
+        await pollDb.findOneAndUpdate(
+            {_id:poll.id},
+            {$set:{options,totalVote}}
+
+        )
+        // console.log(index);
+
+        res.redirect('/create');
+    }
+    catch(e){
+        console.log(e);
+    }
 
 }
 module.exports ={
